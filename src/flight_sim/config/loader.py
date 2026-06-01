@@ -1,7 +1,7 @@
 from pathlib import Path
 import yaml
 
-from flight_sim.models.parameters import SimulationParameters
+from flight_sim.core.parameters import SimulationParameters
 
 
 def load_simulation_parameters(

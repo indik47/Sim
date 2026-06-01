@@ -1,6 +1,6 @@
 from .base import Integrator
-from flight_sim.models.state import State
-from flight_sim.models.parameters import SimulationParameters
+from flight_sim.core.state import State
+from flight_sim.core.parameters import SimulationParameters
 from flight_sim.physics.dynamics import compute_acceleration
 
 

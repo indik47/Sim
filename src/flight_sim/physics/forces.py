@@ -1,6 +1,6 @@
 import numpy as np
-from flight_sim.models.parameters import SimulationParameters
-from flight_sim.models.state import State
+from flight_sim.core.parameters import SimulationParameters
+from flight_sim.core.state import State
 
 
 def gravity_force(mass: float, g: float) -> np.ndarray:

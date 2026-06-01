@@ -1,7 +1,7 @@
 import numpy as np
 from flight_sim.physics import forces
-from flight_sim.models.state import State
-from flight_sim.models.parameters import SimulationParameters
+from flight_sim.core.state import State
+from flight_sim.core.parameters import SimulationParameters
 
 
 def compute_acceleration(state: State, params: SimulationParameters, time: float) -> np.ndarray:
