@@ -1,5 +1,7 @@
 from pathlib import Path
 from flight_sim.analysis import metrics
+from flight_sim.analysis.comparison import create_summary
+from flight_sim.batch.runner import BatchRunner, generate_angle_sweep
 from flight_sim.integrators.euler import EulerIntegrator
 from flight_sim.core.state import State
 from flight_sim.config import load_simulation_parameters
@@ -19,18 +21,31 @@ def main():
     )
 
     params = load_simulation_parameters(Path("configs/baseline.yaml"))
+    angles = [15, 30, 45, 60, 75]
+    parameter_sets = generate_angle_sweep(params,angles,)
 
-    logger = SimulationLogger()
+    simulator = Simulator(EulerIntegrator())
+    runner = BatchRunner(simulator)
 
-    simulator = Simulator(EulerIntegrator(), logger)
-    result = simulator.run(state, params) #TODO: use returned results
+    #result = simulator.run(state, params) #TODO: use returned results
 
-    logger.save_csv(result.trajectory, "trajectory.csv")
+    results = runner.run(state, parameter_sets)
+    result = results[0] #TODO: loop through results
+
+    #single run example
+    # result.trajectory.save_csv(result.trajectory, "trajectory.csv")
 
     print(result.trajectory.tail())
     print(result.metrics)
-    plot_trajectory(result.trajectory)
+    # plot_trajectory(result.trajectory)
 
+    summary = create_summary(results)
+    print(summary)
+
+    summary.to_csv(
+        "batch_results.csv",
+        index=False,
+    )
 
 if __name__ == "__main__":
     main()

@@ -1,23 +1,24 @@
 from copy import deepcopy
 from flight_sim.analysis.metrics import compute_metrics
 from flight_sim.core.results import SimulationResult
+from flight_sim.simulation.logger import SimulationLogger
 
 
 class Simulator:
-    def __init__(self, integrator, logger):
+    def __init__(self, integrator):
         self.integrator = integrator
-        self.logger = logger
 
     def run(self, initial_state, params)-> SimulationResult:
+        logger = SimulationLogger()
         state = deepcopy(initial_state)
         time = 0.0
 
         while (time < params.max_time and state.y >= 0.0):
-            self.logger.record(time, state)
+            logger.record(time, state)
             self.integrator.step(state, params, time)
             time += params.dt
         
-        trajectory = self.logger.to_dataframe()
+        trajectory = logger.to_dataframe()
         metrics = compute_metrics(trajectory)
 
-        return SimulationResult(trajectory=trajectory, metrics=metrics,)
+        return SimulationResult(parameters=params, trajectory=trajectory, metrics=metrics,)
