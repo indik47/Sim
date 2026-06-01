@@ -7,7 +7,8 @@ from flight_sim.core.state import State
 from flight_sim.config import load_simulation_parameters
 from flight_sim.simulation.logger import SimulationLogger
 from flight_sim.simulation.simulator import Simulator
-from flight_sim.visualisation.trajectory_plot import plot_trajectory
+from flight_sim.visualisation.metrics_plot import plot_range_vs_angle
+from flight_sim.visualisation.trajectory_plot import plot_multiple_trajectories, plot_trajectory
 from flight_sim.analysis.metrics import compute_metrics
 
 
@@ -21,7 +22,7 @@ def main():
     )
 
     params = load_simulation_parameters(Path("configs/baseline.yaml"))
-    angles = [15, 30, 45, 60, 75]
+    angles = [i for i in range (15,80, 1)]
     parameter_sets = generate_angle_sweep(params,angles,)
 
     simulator = Simulator(EulerIntegrator())
@@ -38,9 +39,11 @@ def main():
     print(result.trajectory.tail())
     print(result.metrics)
     # plot_trajectory(result.trajectory)
+    plot_multiple_trajectories(results)
 
     summary = create_summary(results)
     print(summary)
+    # plot_range_vs_angle(summary)
 
     summary.to_csv(
         "batch_results.csv",
