@@ -1,9 +1,12 @@
 from pathlib import Path
+from flight_sim.analysis import metrics
 from flight_sim.integrators.euler import EulerIntegrator
 from flight_sim.models.state import State
 from flight_sim.config import load_simulation_parameters
 from flight_sim.simulation.logger import SimulationLogger
 from flight_sim.simulation.simulator import Simulator
+from flight_sim.visualisation.trajectory_plot import plot_trajectory
+from flight_sim.analysis.metrics import compute_metrics
 
 
 def main():
@@ -24,7 +27,13 @@ def main():
 
     logger.save_csv("trajectory.csv")
 
-    print(logger.to_dataframe().tail())
+    df = logger.to_dataframe()
+    print(df.tail())
+
+    metrics = compute_metrics(df)
+    print(metrics)
+
+    plot_trajectory(df)
 
 
 if __name__ == "__main__":
