@@ -9,7 +9,7 @@ class EulerIntegrator(Integrator):
     def step(self, state: State, params: SimulationParameters, time: float) -> State:
         dt = params.dt
 
-        acc = compute_acceleration(state, params)
+        acc = compute_acceleration(state, params, time)
 
         state.x += state.vx * dt
         state.y += state.vy * dt
