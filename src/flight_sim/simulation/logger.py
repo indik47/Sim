@@ -2,7 +2,6 @@ import pandas as pd
 
 
 class SimulationLogger:
-
     def __init__(self):
         self.rows = []
 
@@ -19,3 +18,6 @@ class SimulationLogger:
 
     def to_dataframe(self):
         return pd.DataFrame(self.rows)
+    
+    def save_csv(self, path):
+        self.to_dataframe().to_csv(path, index=False)
