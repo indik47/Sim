@@ -23,17 +23,13 @@ def main():
     logger = SimulationLogger()
 
     simulator = Simulator(EulerIntegrator(), logger)
-    simulator.run(state, params)
+    result = simulator.run(state, params) #TODO: use returned results
 
-    logger.save_csv("trajectory.csv")
+    logger.save_csv(result.trajectory, "trajectory.csv")
 
-    df = logger.to_dataframe()
-    print(df.tail())
-
-    metrics = compute_metrics(df)
-    print(metrics)
-
-    plot_trajectory(df)
+    print(result.trajectory.tail())
+    print(result.metrics)
+    plot_trajectory(result.trajectory)
 
 
 if __name__ == "__main__":

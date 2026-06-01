@@ -19,5 +19,5 @@ class SimulationLogger:
     def to_dataframe(self):
         return pd.DataFrame(self.rows)
     
-    def save_csv(self, path):
-        self.to_dataframe().to_csv(path, index=False)
+    def save_csv(self, dataframe, path):
+        dataframe.to_csv(path, index=False)
