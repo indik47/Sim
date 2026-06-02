@@ -10,7 +10,8 @@ from flight_sim.simulation.simulator import Simulator
 from flight_sim.visualisation.metrics_plot import plot_range_vs_angle
 from flight_sim.visualisation.trajectory_plot import plot_multiple_trajectories, plot_trajectory
 from flight_sim.analysis.metrics import compute_metrics
-
+from flight_sim.optimization.optimizer import RangeOptimizer
+                                               
 
 def main():
     state = State(
@@ -30,25 +31,34 @@ def main():
 
     #result = simulator.run(state, params) #TODO: use returned results
 
-    results = runner.run(state, parameter_sets)
-    result = results[0] #TODO: loop through results
+    # results = runner.run(state, parameter_sets)
 
-    #single run example
+    # single run example
     # result.trajectory.save_csv(result.trajectory, "trajectory.csv")
 
-    print(result.trajectory.tail())
-    print(result.metrics)
-    # plot_trajectory(result.trajectory)
-    plot_multiple_trajectories(results)
+    # print(result.trajectory.tail())
+    # print(result.metrics)
+    # plot_multiple_trajectories(results)
 
-    summary = create_summary(results)
-    print(summary)
-    # plot_range_vs_angle(summary)
+    # summary = create_summary(results)
+    # print(summary)
+    # # plot_range_vs_angle(summary)
 
-    summary.to_csv(
-        "batch_results.csv",
-        index=False,
-    )
+    # summary.to_csv(
+    #     "batch_results.csv",
+    #     index=False,
+    # )
+
+    optimizer = RangeOptimizer(
+    simulator,
+    state,
+    params,
+    target_range=1200.0,
+                            )
+
+    result = optimizer.optimize()
+
+    print(result)
 
 if __name__ == "__main__":
     main()
