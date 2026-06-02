@@ -11,7 +11,42 @@ from flight_sim.visualisation.metrics_plot import plot_range_vs_angle
 from flight_sim.visualisation.trajectory_plot import plot_multiple_trajectories, plot_trajectory
 from flight_sim.analysis.metrics import compute_metrics
 from flight_sim.optimization.optimizer import RangeOptimizer
-                                               
+
+
+def run_single(simulator, state, params):
+    result = simulator.run(state, params)
+    print(result.metrics)
+
+    result.trajectory.to_csv("trajectory.csv", index=False)
+    plot_trajectory(result.trajectory)
+
+
+def run_batch(simulator, state, params):
+    angles = range(15, 80)
+    parameter_sets = generate_angle_sweep(params, angles)
+
+    runner = BatchRunner(simulator)
+
+    results = runner.run(state, parameter_sets)
+    summary = create_summary(results)
+    print(summary)
+
+    summary.to_csv("batch_results.csv", index=False)
+
+    plot_range_vs_angle(summary)
+    plot_multiple_trajectories(results)
+
+
+def run_optimization(simulator, state, params):
+    optimizer = RangeOptimizer(
+        simulator,
+        state,
+        params,
+        target_range=1200.0,
+    )
+
+    result = optimizer.optimize()
+    print(result)                                           
 
 def main():
     state = State(
@@ -23,42 +58,9 @@ def main():
     )
 
     params = load_simulation_parameters(Path("configs/baseline.yaml"))
-    angles = [i for i in range (15,80, 1)]
-    parameter_sets = generate_angle_sweep(params,angles,)
-
     simulator = Simulator(EulerIntegrator())
-    runner = BatchRunner(simulator)
 
-    #result = simulator.run(state, params) #TODO: use returned results
-
-    # results = runner.run(state, parameter_sets)
-
-    # single run example
-    # result.trajectory.save_csv(result.trajectory, "trajectory.csv")
-
-    # print(result.trajectory.tail())
-    # print(result.metrics)
-    # plot_multiple_trajectories(results)
-
-    # summary = create_summary(results)
-    # print(summary)
-    # # plot_range_vs_angle(summary)
-
-    # summary.to_csv(
-    #     "batch_results.csv",
-    #     index=False,
-    # )
-
-    optimizer = RangeOptimizer(
-    simulator,
-    state,
-    params,
-    target_range=1200.0,
-                            )
-
-    result = optimizer.optimize()
-
-    print(result)
+    run_batch(simulator, state, params)
 
 if __name__ == "__main__":
     main()
